@@ -16,9 +16,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+Route::get('/createCar', function () {
+    return view('createCar');
+})->name('createCar');
+Route::get('/plate', function () {
+    return view('plate');
+})->name('plate');
 
 Route::middleware('auth')->group(function () {
-    //
+
 });
 
 require __DIR__.'/auth.php';
