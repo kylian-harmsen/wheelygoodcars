@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CarsController;
+use App\Http\Controllers\FormController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,22 +17,40 @@ use App\Http\Controllers\CarsController;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
-Route::get('/createCar', function () {
-    return view('createCar');
-})->name('createCar');
-Route::get('/plate', function () {
-    return view('plate');
-})->name('plate');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/alle-autos', [FormController::class, 'carList'])->name('alle-autos'); // Route for car list
+
+    Route::get('/mijn-aanbod', function () {
+        return view('layouts.mijn-aanbod');
+    })->name('mijn-aanbod');
+
+    Route::get('/aanbod-plaatsen', function () {
+        return view('layouts.aanbod-plaatsen');
+    })->name('aanbod-plaatsen');
+
+    // routes die form doen submitten
+    Route::post('/aanbod-plaatsen/submit', [FormController::class, 'submitForm'])->name('aanbod.submit');
+
+    Route::post('/next-page/submit', [FormController::class, 'SaveToDB'])->name('aanbod.toDB');
+    // rout om de kenteken data in de volgende pagina in te laden
+    Route::get('/next-page', [FormController::class, 'showNextPage'])->name('next-page.show');
+
+    route::get('/mijn-aanbod', [FormController::class, 'getUserCars'])->name('mijn-aanbod');
+
+    // Route om een auto te verwijderen
+    Route::delete('/auto/verwijderen/{id}', [FormController::class, 'deleteCar'])->name('auto.delete');
+
+    // Route om de edit-pagina weer te geven
+    Route::get('/auto/bewerken/{id}', [FormController::class, 'editCar'])->name('auto.edit');
+
+    // Route om de update op te slaan
+    Route::post('/auto/update/{id}', [FormController::class, 'updateCar'])->name('auto.update');
 
 });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/plate', [CarsController::class, 'offerStep1'])->name('cars.offer.step1');
-    Route::post('/plate', [CarsController::class, 'processStep1'])->name('cars.offer.step1.process');
-    Route::get('/createCar', [CarsController::class, 'offerStep2'])->name('cars.offer.step2');
-    Route::post('/createCar', [CarsController::class, 'processStep2'])->name('cars.offer.step2.process');
-});
+
+
+Route::get('test', function() {return view('test');});
 
 require __DIR__.'/auth.php';
